@@ -1,3 +1,10 @@
 html{
 	font-family: 'Roboto', sans-serif;
 }
+.brand-logo{
+	padding-left: 2%;
+}
+nav .nav-wrapper > * {
+	padding-left: 2%;
+	padding-right: 2%;
+}

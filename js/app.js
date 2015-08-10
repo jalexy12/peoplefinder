@@ -1,12 +1,5 @@
 import React from "react"
-import Login from './components/Login'
-import Logout from './components/Logout'
-
-let mui = require('material-ui')
-let RaisedButton = mui.RaisedButton
-let ThemeManager = new mui.Styles.ThemeManager()
-let Menu = require('material-ui/lib/menus/menu')
-let MenuItem = require('material-ui/lib/menus/menu-item')
+import MyNav from './components/MyNav'
 
 class App extends React.Component {
 
@@ -14,6 +7,8 @@ class App extends React.Component {
 	 	super()
 	 	let ref = new Firebase("https://brilliant-torch-3183.firebaseio.com")
 	 	let currentUser = ref.getAuth()
+
+	 	this.facebookLogout = this.facebookLogout.bind(this)
 	 	this.facebookLogin = this.facebookLogin.bind(this)
 
 	 	this.state = {
@@ -25,13 +20,15 @@ class App extends React.Component {
 
 	 facebookLogin(){
  	 	let _this = this
-
  	 	if (!this.state.currentUser){
  		 	this.state.firebase.authWithOAuthPopup("facebook", function(error, authData) {
  		 	  if (error) {
  		 	    console.log("Login Failed!", error);
  		 	  } else {
- 		 	    _this.setState({current_user: _this.state.firebase.getAuth})
+ 		 	    _this.setState(
+ 		 	    	{ current_user: _this.state.firebase.getAuth,
+ 		 	    	  loggedIn: true
+ 		 	    	})
  		 	    console.log(authData.facebook.accessToken);
  		 	  }
  		 	}, {
@@ -41,41 +38,24 @@ class App extends React.Component {
 	 }
 
 	 facebookLogout(){
-
-	 }
-
-	 getChildContext() {
-	   return {
-	     muiTheme: ThemeManager.getCurrentTheme()
-	   };
+	 	this.setState({ loggedIn: false, currentUser: null }, this.state.firebase.unauth())
 	 }
 
 	 componentDidMount() {
-	 	this.facebookLogin();
 	 	this.setState( {loggedIn: this.state.currentUser ? true : false} ) 	
 	 }
 
 	render(){
 		return(
-		      <div>
-		        <ul>
-		          <li>
-		            {this.state.loggedIn ? (
-		              <Logout auth={this.state.firebase} />
-		            ) : (
-		              <Login onClick={this.facebookLogin} />
-		            )}
-		          </li>
-		        </ul>
-		      </div>
+		     <MyNav 
+		      	loggedIn={this.state.loggedIn} 
+		      	onLogout={this.facebookLogout}
+		      	onLogin={this.facebookLogin}
+		      	/>
+	            
 		    )
 	}
 }
 
-
-
-App.childContextTypes = {
-  muiTheme: React.PropTypes.object
-};
 
 React.render(<App />, document.getElementById("demoContainer"))
