@@ -4,6 +4,10 @@ html{
 .brand-logo{
 	padding-left: 2%;
 }
+
+.map{
+	height: 100vh;
+}
 nav .nav-wrapper > * {
 	padding-left: 2%;
 	padding-right: 2%;
